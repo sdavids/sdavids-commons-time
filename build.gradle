@@ -26,14 +26,17 @@ import java.nio.file.Path
 import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
+  ext {
+    forbiddenapisVersion = '2.3'
+  }
+
   repositories {
-    mavenLocal()
     jcenter()
   }
 
   // https://bintray.com/bintray/jcenter
   dependencies {
-    classpath 'de.thetaphi:forbiddenapis:2.3'
+    classpath("de.thetaphi:forbiddenapis:${forbiddenapisVersion}")
   }
 }
 
@@ -41,8 +44,8 @@ buildscript {
 plugins {
   id 'org.dm.bundle' version '0.10.0'
   id 'de.fuerstenau.buildconfig' version '1.1.8'
-  id 'net.nemerosa.versioning' version '2.6.0'
-  id 'com.diffplug.gradle.spotless' version '3.4.1'
+  id 'net.nemerosa.versioning' version '2.6.1'
+  id 'com.diffplug.gradle.spotless' version '3.5.2'
   id 'net.ltgt.errorprone' version '0.0.11'
   id 'com.github.ben-manes.versions' version '0.15.0'
   id 'com.jfrog.bintray' version '1.7.3'
@@ -52,11 +55,23 @@ ext {
   rootPackageName = 'io.sdavids.commons.time'
 
   // https://bintray.com/bintray/jcenter
-  commonsTestVersion = '1.0.0'
+  errorproneVersion = '2.1.1'
+  guavaVersion = '23.0'
+  jsr305Version = '3.0.2'
+  joolVersion = '0.9.12'
+  junitVersion = '4.12'
+  assertjVersion = '3.8.0'
+  commonsTestVersion = '1.1.1'
+  commonsTestJUnit4 = '1.1.1'
 
   now = now(UTC)
   nowIsoDateTime = now.format(ISO_DATE_TIME)
   buildJdk = "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})"
+  vendor = 'Sebastian Davids'
+
+  javadocLinks = [
+      'http://docs.oracle.com/javase/8/docs/api/'
+  ] as String[]
 }
 
 group 'io.sdavids.commons'
@@ -75,11 +90,23 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 
 dependencies {
-  testImplementation "io.sdavids.commons.test:sdavids-commons-test:${commonsTestVersion}"
+  errorprone("com.google.errorprone:error_prone_core:${errorproneVersion}")
+
+  compileOnly("com.google.code.findbugs:jsr305:${jsr305Version}")
+
+  testImplementation("io.sdavids.commons.test:sdavids-commons-test:${commonsTestVersion}")
+  testImplementation("io.sdavids.commons.test:sdavids-commons-test-junit4:${commonsTestJUnit4}")
+  testImplementation("com.google.guava:guava:${guavaVersion}") {
+    exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
+    exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
+  }
+  testImplementation("org.jooq:jool:${joolVersion}")
+  testImplementation("junit:junit:${junitVersion}")
+  testImplementation("org.assertj:assertj-core:${assertjVersion}")
 }
 
 sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
 
 compileJava.options.debugOptions.debugLevel = 'source,lines,vars'
 
@@ -115,11 +142,6 @@ buildConfig {
   buildConfigField 'java.time.OffsetDateTime', 'BUILD_TIME', "java.time.OffsetDateTime.parse(\"${nowIsoDateTime}\")"
 }
 
-test {
-  // injectable singleton needs a new VM for each test case
-  forkEvery 1
-}
-
 jar {
   manifest {
     attributes(
@@ -131,8 +153,10 @@ jar {
         'Build-Host': "${InetAddress.localHost.hostName}",
         'Specification-Title': project.name,
         'Specification-Version': project.version,
+        'Specification-Vendor': project.vendor,
         'Implementation-Title': project.name,
         'Implementation-Version': "${project.version}-${versioning.info.build}",
+        'Implementation-Vendor': project.vendor,
         ("Version-${project.name}".toString().capitalize()): project.version,
         ("Time-${project.name}".toString().capitalize()): nowIsoDateTime,
         ("Revision-${project.name}".toString().capitalize()): versioning.info.commit,
@@ -143,11 +167,15 @@ jar {
 
 bundle {
   instructions << [
-      'Bundle-SymbolicName': rootPackageName,
-      'Bundle-Name': project.name,
-      'Bundle-License': 'http://www.apache.org/licenses/LICENSE-2.0.txt',
-      'Import-Package': 'javax.annotation;resolution:=optional,*',
-      'Export-Package': "${group}.*;-split-package:=merge-first"
+      'Bundle-SymbolicName'  : rootPackageName,
+      'Bundle-Name'          : project.name,
+      'Bundle-License'       : 'http://www.apache.org/licenses/LICENSE-2.0.txt',
+      'Bundle-Vendor'        : project.vendor,
+      'Bundle-ContactAddress': 'sdavids@gmx.de',
+      'Import-Package'       : 'javax.annotation;resolution:=optional,*',
+      'Export-Package'       : "${group}.*;-split-package:=merge-first",
+      'Provide-Capability'   : 'osgi.serviceloader;osgi.serviceloader=ClockSupplier',
+      'Require-Capability'   : 'osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)",osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"'
   ]
 }
 
@@ -182,8 +210,19 @@ spotless {
     endWithNewline()
   }
   java {
-    googleJavaFormat('1.3')
+    googleJavaFormat('1.4')
     licenseHeaderFile "${rootProject.projectDir}/gradle/spotless-license-java.txt"
+  }
+}
+
+test {
+  systemProperty 'user.timezone', System.properties['user.timezone']
+
+  // injectable singleton needs a new VM for each test case
+  forkEvery 1
+
+  testLogging {
+    exceptionFormat = 'full'
   }
 }
 
@@ -195,7 +234,7 @@ idea {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '4.1'
+  gradleVersion = '4.2'
   distributionType = DistributionType.ALL
 }
 
@@ -206,10 +245,6 @@ task versionOnly {
   doLast {
     println version
   }
-}
-
-tasks.withType(Test) { task ->
-  task.testLogging.exceptionFormat = 'full'
 }
 
 if (project.hasProperty('release')) {
@@ -271,8 +306,14 @@ if (project.hasProperty('release')) {
   jar.finalizedBy pack200Jar
   pack200JarExec.mustRunAfter pack200JarPrepare
 
-  javadoc.options.encoding = 'UTF-8'
-  javadoc.options.links 'https://docs.oracle.com/javase/8/docs/api/'
+  javadoc {
+    options.encoding = 'UTF-8'
+    options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+    options.header = "${project.name} ${project.version}"
+    options.docTitle = "${project.name} API"
+    options.links = javadocLinks
+    options.addStringOption '-quiet'
+  }
 
   artifacts {
     archives javadocJar, sourcesJar
