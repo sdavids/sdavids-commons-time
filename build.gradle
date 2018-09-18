@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Sebastian Davids
+ * Copyright (c) 2017-2018, Sebastian Davids
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ plugins {
   id 'org.dm.bundle' version '0.10.0'
   id 'de.fuerstenau.buildconfig' version '1.1.8'
   id 'net.nemerosa.versioning' version '2.6.1'
-  id 'com.diffplug.gradle.spotless' version '3.5.2'
+  id 'com.diffplug.gradle.spotless' version '3.14.0'
   id 'net.ltgt.errorprone' version '0.0.11'
   id 'com.github.ben-manes.versions' version '0.15.0'
   id 'com.jfrog.bintray' version '1.7.3'
@@ -85,7 +85,6 @@ repositories {
 apply plugin: 'java-library'
 apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'de.thetaphi.forbiddenapis'
-apply plugin: 'com.diffplug.gradle.spotless'
 apply plugin: 'maven'
 apply plugin: 'idea'
 
@@ -192,26 +191,38 @@ forbiddenApis {
 
 spotless {
   format 'misc', {
-    target '.gitattributes', '.gitignore', '**/*.gradle', '**/*.adoc', '**/*.txt',
+    target '.gitattributes', '.gitignore',
+        'README.adoc',
+        'release.sh',
+        'CODING_STYLE.txt',
         'AUTHORS', 'CONTRIBUTORS', 'LICENSE', 'NOTICE'
     trimTrailingWhitespace()
     endWithNewline()
   }
   format 'properties', {
-    target '**/*.properties'
+    target 'gradle.properties'
     encoding 'ISO-8859-1'
     trimTrailingWhitespace()
     endWithNewline()
   }
   format 'yaml', {
-    target '**/*.yaml', '**/*.yml'
-    indentWithSpaces(2)
+    target '.travis.yml'
+    indentWithSpaces 2
+    trimTrailingWhitespace()
+    endWithNewline()
+  }
+  format 'xml', {
+    target 'gradle/conf/**/*.xml'
+    indentWithSpaces 2
     trimTrailingWhitespace()
     endWithNewline()
   }
   java {
-    googleJavaFormat('1.4')
-    licenseHeaderFile "${rootProject.projectDir}/gradle/spotless-license-java.txt"
+    googleJavaFormat '1.6'
+    licenseHeaderFile "${project.projectDir}/gradle/conf/spotless-license-java.txt"
+  }
+  groovyGradle {
+    target 'build.gradle', 'settings.gradle'
   }
 }
 
