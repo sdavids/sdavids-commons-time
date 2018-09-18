@@ -15,7 +15,6 @@
  */
 package io.sdavids.commons.time;
 
-import static com.google.common.collect.Iterables.getFirst;
 import static io.sdavids.commons.test.junit4.DefaultTimeZoneRule.forTimeZone;
 import static io.sdavids.commons.time.ClockSupplier.fixedClockSupplier;
 import static io.sdavids.commons.time.ClockSupplier.fixedUtcClockSupplier;
@@ -106,7 +105,7 @@ public final class ClockSupplierTest {
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
 
-    Clock clock = getFirst(clocks, null);
+    Clock clock = clocks.iterator().next();
 
     // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(systemUTC().getZone());
@@ -145,7 +144,7 @@ public final class ClockSupplierTest {
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
 
-    Clock clock = getFirst(clocks, null);
+    Clock clock = clocks.iterator().next();
 
     // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(systemDefaultZone().getZone());
@@ -194,7 +193,7 @@ public final class ClockSupplierTest {
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
 
-    Clock clock = getFirst(clocks, null);
+    Clock clock = clocks.iterator().next();
 
     // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(FIXED_ZONE);
@@ -212,7 +211,7 @@ public final class ClockSupplierTest {
     assertThat(instants).hasSize(1);
     assertThat(instants).doesNotContainNull();
 
-    assertThat(getFirst(instants, null)).isEqualTo(FIXED_INSTANT);
+    assertThat(instants.iterator().next()).isEqualTo(FIXED_INSTANT);
   }
 
   @Test
@@ -254,7 +253,7 @@ public final class ClockSupplierTest {
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
 
-    Clock clock = getFirst(clocks, null);
+    Clock clock = clocks.iterator().next();
 
     // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(ZoneId.of("Etc/UTC"));
@@ -272,7 +271,7 @@ public final class ClockSupplierTest {
     assertThat(instants).hasSize(1);
     assertThat(instants).doesNotContainNull();
 
-    assertThat(getFirst(instants, null)).isEqualTo(FIXED_INSTANT);
+    assertThat(instants.iterator().next()).isEqualTo(FIXED_INSTANT);
   }
 
   @SuppressWarnings("unchecked")
