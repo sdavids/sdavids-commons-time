@@ -50,7 +50,6 @@ ext {
   java8SignatureVersion = '1.0'
   jacocoVersion = '0.8.2'
   guavaVersion = '23.0'
-  joolVersion = '0.9.12'
   junitVersion = '4.12'
   assertjVersion = '3.8.0'
   commonsTestVersion = '1.1.1'
@@ -86,7 +85,6 @@ dependencies {
     exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
     exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
   }
-  testImplementation "org.jooq:jool:${joolVersion}"
   testImplementation "junit:junit:${junitVersion}"
   testImplementation "org.assertj:assertj-core:${assertjVersion}"
 }

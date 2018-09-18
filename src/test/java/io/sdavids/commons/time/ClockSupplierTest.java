@@ -33,8 +33,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.generate;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jooq.lambda.Unchecked.function;
-import static org.jooq.lambda.Unchecked.supplier;
 
 import io.sdavids.commons.test.junit4.DefaultTimeZoneRule;
 import java.io.ByteArrayInputStream;
@@ -51,8 +49,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +61,26 @@ import org.junit.rules.ExpectedException;
 public final class ClockSupplierTest {
 
   private static final long COUNT = 1000L;
+
+  private static Function<Future<Clock>, Clock> getFuture() {
+    return f -> {
+      try {
+        return f.get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new IllegalStateException(e);
+      }
+    };
+  }
+
+  private static Supplier<Instant> supplier(Callable<Instant> supplier) {
+    return () -> {
+      try {
+        return supplier.call();
+      } catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
+    };
+  }
 
   @Rule public ExpectedException expectedException = ExpectedException.none();
 
@@ -81,7 +101,7 @@ public final class ClockSupplierTest {
     service.shutdown();
     service.awaitTermination(1L, MINUTES);
 
-    Set<Clock> clocks = result.stream().map(function(Future::get)).collect(toSet());
+    Set<Clock> clocks = result.stream().map(getFuture()).collect(toSet());
 
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
@@ -120,7 +140,7 @@ public final class ClockSupplierTest {
     service.shutdown();
     service.awaitTermination(1L, MINUTES);
 
-    Set<Clock> clocks = result.stream().map(function(Future::get)).collect(toSet());
+    Set<Clock> clocks = result.stream().map(getFuture()).collect(toSet());
 
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
@@ -169,7 +189,7 @@ public final class ClockSupplierTest {
     service.shutdown();
     service.awaitTermination(1L, MINUTES);
 
-    Set<Clock> clocks = result.stream().map(function(Future::get)).collect(toSet());
+    Set<Clock> clocks = result.stream().map(getFuture()).collect(toSet());
 
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
@@ -229,7 +249,7 @@ public final class ClockSupplierTest {
     service.shutdown();
     service.awaitTermination(1L, MINUTES);
 
-    Set<Clock> clocks = result.stream().map(function(Future::get)).collect(toSet());
+    Set<Clock> clocks = result.stream().map(getFuture()).collect(toSet());
 
     assertThat(clocks).hasSize(1);
     assertThat(clocks).doesNotContainNull();
