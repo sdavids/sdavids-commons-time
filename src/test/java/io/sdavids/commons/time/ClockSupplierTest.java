@@ -70,6 +70,8 @@ public final class ClockSupplierTest {
   public void systemUtcClockSupplier_() throws InterruptedException {
     Supplier<Clock> supplier = systemUtcClockSupplier();
 
+    assertThat(supplier.toString()).isEqualTo("ClockSupplier.systemUtcClockSupplier()");
+
     ExecutorService service = newFixedThreadPool(5);
 
     List<Future<Clock>> result =
@@ -106,6 +108,8 @@ public final class ClockSupplierTest {
   @Test
   public void systemDefaultZoneClockSupplier_() throws InterruptedException {
     Supplier<Clock> supplier = systemDefaultZoneClockSupplier();
+
+    assertThat(supplier.toString()).isEqualTo("ClockSupplier.systemDefaultZoneClockSupplier()");
 
     ExecutorService service = newFixedThreadPool(5);
 
@@ -152,6 +156,9 @@ public final class ClockSupplierTest {
   @Test
   public void fixedClockSupplier_() throws InterruptedException {
     Supplier<Clock> supplier = fixedClockSupplier(FIXED_INSTANT, FIXED_ZONE);
+
+    assertThat(supplier.toString())
+        .isEqualTo("ClockSupplier.fixedClockSupplier(2017-10-02T17:03:00Z, America/Chicago)");
 
     ExecutorService service = newFixedThreadPool(5);
 
@@ -209,6 +216,9 @@ public final class ClockSupplierTest {
   @Test
   public void fixedUtcClockSupplier_() throws InterruptedException {
     Supplier<Clock> supplier = fixedUtcClockSupplier(FIXED_INSTANT);
+
+    assertThat(supplier.toString())
+        .isEqualTo("ClockSupplier.fixedClockSupplier(2017-10-02T17:03:00Z, Etc/UTC)");
 
     ExecutorService service = newFixedThreadPool(5);
 

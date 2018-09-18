@@ -85,7 +85,7 @@ public abstract class ClockSupplier implements Supplier<Clock> {
 
     @Override
     public String toString() {
-      return "ClockSupplier.fixedClockSupplier()";
+      return "ClockSupplier.fixedClockSupplier(" + fixedInstant + ", " + zone + ')';
     }
 
     @Override
