@@ -44,6 +44,7 @@ ext {
   checkstyleVersion = '8.12'
   pmdVersion = '6.7.0'
   spotbugsVersion = '3.1.7'
+  findsecbugsVersion = '1.8.0'
   java8SignatureVersion = '1.0'
   guavaVersion = '23.0'
   joolVersion = '0.9.12'
@@ -73,6 +74,7 @@ dependencies {
   checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
   pmd "net.sourceforge.pmd:pmd-core:${pmdVersion}"
   pmd "net.sourceforge.pmd:pmd-java:${pmdVersion}"
+  spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:${findsecbugsVersion}"
 
   testImplementation("io.sdavids.commons.test:sdavids-commons-test:${commonsTestVersion}")
   testImplementation("io.sdavids.commons.test:sdavids-commons-test-junit4:${commonsTestJUnit4}")

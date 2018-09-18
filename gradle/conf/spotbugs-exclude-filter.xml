@@ -9,4 +9,8 @@
     <Class name="io.sdavids.commons.time.ClockSupplierTest"/>
     <Bug code="UrF"/>
   </Match>
+  <Match>
+    <Class name="io.sdavids.commons.time.ClockSupplierTest"/>
+    <Bug pattern="OBJECT_DESERIALIZATION"/>
+  </Match>
 </FindBugsFilter>
