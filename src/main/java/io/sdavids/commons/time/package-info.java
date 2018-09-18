@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Sebastian Davids
+ * Copyright (c) 2017-2018, Sebastian Davids
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,4 @@
  *
  * @since 1.0
  */
-@ParametersAreNonnullByDefault
 package io.sdavids.commons.time;
-
-import javax.annotation.ParametersAreNonnullByDefault;
