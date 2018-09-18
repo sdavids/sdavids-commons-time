@@ -27,16 +27,17 @@ import java.util.function.Supplier;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * <strong>Important</strong>: This test has to run in a new VM.
- *
- * <h3 id="Gradle">Gradle</h3>
- *
- * <pre>
- * <code>test {
- *  forkEvery 1
- * }</code></pre>
- */
+// Important: This test has to run in a forked VM.
+//
+// IntelliJ:
+//
+//   Forkmode - class
+//
+// Gradle:
+//
+//   test {
+//     forkEvery 1
+//   }
 public final class ClockSupplierWithServiceTest {
 
   @BeforeClass
