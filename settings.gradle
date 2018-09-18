@@ -16,6 +16,12 @@
 
 rootProject.name = 'sdavids-commons-time'
 
-if (file('../sdavids-commons-test').exists()) {
-  includeBuild '../sdavids-commons-test'
+def sdavidsCommonsTest = '../sdavids-commons-test'
+if (file(sdavidsCommonsTest).exists()) {
+  includeBuild sdavidsCommonsTest
+}
+
+def sdavidsCommonsTestJUnit4 = '../sdavids-commons-test-junit4'
+if (file(sdavidsCommonsTestJUnit4).exists()) {
+  includeBuild sdavidsCommonsTestJUnit4
 }
