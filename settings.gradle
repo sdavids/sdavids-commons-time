@@ -16,6 +16,9 @@
 
 rootProject.name = 'sdavids-commons-time'
 
+enableFeaturePreview('IMPROVED_POM_SUPPORT')
+enableFeaturePreview('STABLE_PUBLISHING')
+
 def sdavidsCommonsTest = '../sdavids-commons-test'
 if (file(sdavidsCommonsTest).exists()) {
   includeBuild sdavidsCommonsTest
