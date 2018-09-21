@@ -4,6 +4,8 @@ Sebastian Davids
 image::https://travis-ci.org/sdavids/sdavids-commons-time.svg?branch=master[Build Status]
 image::https://api.bintray.com/packages/sdavids/sdavids/sdavids-commons-time/images/download.svg[link="https://bintray.com/sdavids/sdavids/sdavids-commons-time/_latestVersion"]
 
+Utility methods and classes for using dates, times, instants, and durations.
+
 == Building from Source
 
 This module can be build via:
