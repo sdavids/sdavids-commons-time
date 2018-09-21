@@ -26,8 +26,8 @@ import static java.time.Clock.systemDefaultZone;
 import static java.time.Clock.systemUTC;
 import static java.util.ServiceLoader.load;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.generate;
@@ -59,7 +59,7 @@ import org.junit.rules.ExpectedException;
 
 public final class ClockSupplierTest {
 
-  private static final long COUNT = 1000L;
+  private static final long COUNT = 100L;
 
   private static Function<Future<Clock>, Clock> getFuture() {
     return f -> {
@@ -114,7 +114,7 @@ public final class ClockSupplierTest {
         generate(
                 supplier(
                     () -> {
-                      NANOSECONDS.sleep(5L);
+                      MILLISECONDS.sleep(10L);
                       return clock.instant();
                     }))
             .limit(COUNT)
@@ -153,7 +153,7 @@ public final class ClockSupplierTest {
         generate(
                 supplier(
                     () -> {
-                      NANOSECONDS.sleep(5L);
+                      MILLISECONDS.sleep(10L);
                       return clock.instant();
                     }))
             .limit(COUNT)
@@ -202,7 +202,7 @@ public final class ClockSupplierTest {
         generate(
                 supplier(
                     () -> {
-                      NANOSECONDS.sleep(5L);
+                      MILLISECONDS.sleep(10L);
                       return clock.instant();
                     }))
             .limit(COUNT)
@@ -262,7 +262,7 @@ public final class ClockSupplierTest {
         generate(
                 supplier(
                     () -> {
-                      NANOSECONDS.sleep(5L);
+                      MILLISECONDS.sleep(10L);
                       return clock.instant();
                     }))
             .limit(COUNT)
