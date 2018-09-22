@@ -1,0 +1,13 @@
+Junit 5:
+  - migrate
+  - run tests in parallel
+
+Java 10:
+  - verify and add to .travis.yml
+
+Plugin Issues:
+  - https://github.com/bintray/gradle-bintray-plugin/issues/255
+
+Gradle 5:
+ - remove enableFeaturePreview from settings.gradle
+ - publishing.publications.mavenJava.pom.name
