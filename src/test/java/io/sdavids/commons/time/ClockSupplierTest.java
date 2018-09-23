@@ -107,7 +107,6 @@ public final class ClockSupplierTest {
 
     Clock clock = clocks.iterator().next();
 
-    // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(systemUTC().getZone());
 
     Set<Instant> instants =
@@ -146,7 +145,6 @@ public final class ClockSupplierTest {
 
     Clock clock = clocks.iterator().next();
 
-    // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(systemDefaultZone().getZone());
 
     Set<Instant> instants =
@@ -168,7 +166,6 @@ public final class ClockSupplierTest {
     expectedException.expect(NullPointerException.class);
     expectedException.expectMessage("fixedInstant");
 
-    // noinspection ConstantConditions
     fixedClockSupplier(null, FIXED_ZONE);
   }
 
@@ -195,7 +192,6 @@ public final class ClockSupplierTest {
 
     Clock clock = clocks.iterator().next();
 
-    // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(FIXED_ZONE);
 
     Set<Instant> instants =
@@ -219,7 +215,6 @@ public final class ClockSupplierTest {
     expectedException.expect(NullPointerException.class);
     expectedException.expectMessage("zone");
 
-    // noinspection ConstantConditions
     fixedClockSupplier(FIXED_INSTANT, null);
   }
 
@@ -228,7 +223,6 @@ public final class ClockSupplierTest {
     expectedException.expect(NullPointerException.class);
     expectedException.expectMessage("fixedInstant");
 
-    // noinspection ConstantConditions
     fixedUtcClockSupplier(null);
   }
 
@@ -255,7 +249,6 @@ public final class ClockSupplierTest {
 
     Clock clock = clocks.iterator().next();
 
-    // noinspection ConstantConditions
     assertThat(clock.getZone()).isEqualTo(ZoneId.of("Etc/UTC"));
 
     Set<Instant> instants =

@@ -38,7 +38,6 @@ import java.util.function.Supplier;
  * @see <a href="http://wiki.apidesign.org/wiki/Injectable_Singleton">Injectable Singleton</a>
  * @since 1.0
  */
-@SuppressWarnings("CyclicClassDependency")
 public abstract class ClockSupplier implements Supplier<Clock> {
 
   private enum SystemUtcClockSupplier implements Supplier<Clock> {
@@ -112,7 +111,6 @@ public abstract class ClockSupplier implements Supplier<Clock> {
     }
   }
 
-  @SuppressWarnings("CyclicClassDependency")
   private static final class SingletonHolder {
 
     private static Supplier<Clock> initialize() {
