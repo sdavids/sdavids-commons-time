@@ -6,6 +6,10 @@
   <!-- http://spotbugs.readthedocs.io/en/latest/filter.html -->
 
   <Match>
+    <Class name="~.*Test"/>
+    <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
+  </Match>
+  <Match>
     <Class name="io.sdavids.commons.time.ClockSupplierTest"/>
     <Bug code="UrF"/>
   </Match>

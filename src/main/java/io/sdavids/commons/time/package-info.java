@@ -20,4 +20,7 @@
  *
  * @since 1.0
  */
+@ParametersAreNonnullByDefault
 package io.sdavids.commons.time;
+
+import javax.annotation.ParametersAreNonnullByDefault;
