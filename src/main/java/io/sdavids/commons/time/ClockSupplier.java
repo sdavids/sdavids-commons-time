@@ -17,6 +17,7 @@ package io.sdavids.commons.time;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.ServiceLoader.load;
+import static org.apiguardian.api.API.Status.STABLE;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,6 +28,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Iterator;
 import java.util.function.Supplier;
+import org.apiguardian.api.API;
 
 /**
  * Suppliers for clocks.
@@ -38,6 +40,7 @@ import java.util.function.Supplier;
  * @see <a href="http://wiki.apidesign.org/wiki/Injectable_Singleton">Injectable Singleton</a>
  * @since 1.0
  */
+@API(status = STABLE, since = "1.0")
 public abstract class ClockSupplier implements Supplier<Clock> {
 
   private enum SystemUtcClockSupplier implements Supplier<Clock> {
