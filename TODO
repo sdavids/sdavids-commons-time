@@ -2,9 +2,6 @@ Junit 5:
   - migrate
   - run tests in parallel
 
-Java 10:
-  - verify and add to .travis.yml
-
 Plugin Issues:
   - https://github.com/bintray/gradle-bintray-plugin/issues/255
 
