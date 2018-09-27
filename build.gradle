@@ -48,7 +48,7 @@ ext {
   jsr305Version = '3.0.2'
   junitVersion = '4.12'
   assertjVersion = '3.8.0'
-  commonsTestVersion = '1.1.1'
+  commonsTestVersion = '2.0.0'
   commonsTestJUnit4 = '1.1.1'
 
   vendor = 'Sebastian Davids'
