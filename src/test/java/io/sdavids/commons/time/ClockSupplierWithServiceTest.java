@@ -24,24 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Clock;
 import java.util.Iterator;
 import java.util.function.Supplier;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
-// Important: This test has to run in a forked VM.
-//
-// IntelliJ:
-//
-//   Forkmode - class
-//
-// Gradle:
-//
-//   test {
-//     forkEvery 1
-//   }
 public final class ClockSupplierWithServiceTest {
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     setServices(TestableClockSupplier.class);
   }
 
@@ -52,9 +41,13 @@ public final class ClockSupplierWithServiceTest {
     assertThat(providers.hasNext()).isTrue();
 
     Supplier<Clock> first = ClockSupplier.getDefault();
+    Clock firstClock = first.get();
 
     assertThat(first).isNotNull();
-    assertThat(first).isInstanceOf(TestableClockSupplier.class);
+    assertThat(first.toString())
+        .isEqualTo("NonCachingUuidSupplier(io.sdavids.commons.time.TestableClockSupplier)");
+    assertThat(firstClock.instant()).isEqualTo(FIXED_INSTANT);
+    assertThat(firstClock.getZone()).isEqualTo(FIXED_ZONE);
 
     setServices();
 
@@ -63,9 +56,14 @@ public final class ClockSupplierWithServiceTest {
     assertThat(providers.hasNext()).isFalse();
 
     Supplier<Clock> second = ClockSupplier.getDefault();
+    Clock secondClock = first.get();
 
     assertThat(second).isNotNull();
-    assertThat(second).isInstanceOf(TestableClockSupplier.class);
+    assertThat(second.toString())
+        .isEqualTo(
+            "NonCachingUuidSupplier(io.sdavids.commons.time.ClockSupplier$SystemUtcClockSupplier)");
+    assertThat(secondClock.instant()).isNotEqualTo(FIXED_INSTANT);
+    assertThat(secondClock.getZone()).isNotEqualTo(FIXED_ZONE);
 
     assertThat(first).isSameAs(second);
   }

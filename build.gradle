@@ -134,9 +134,13 @@ tasks.withType(Test).configureEach {
   systemProperty 'user.language', System.properties['user.language']
   systemProperty 'user.country', System.properties['user.country']
   systemProperty 'java.awt.headless', 'true'
+  systemProperty 'io.sdavids.commons.time.clock.supplier.default.cached', 'false'
 
-  // injectable singleton needs a new VM for each test case
-  forkEvery 1
+  maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+
+  // TODO: https://github.com/gradle/gradle/issues/6453
+  forkEvery = 1
+  //
 
   failFast = true
 

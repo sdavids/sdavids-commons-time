@@ -15,6 +15,7 @@
  */
 package io.sdavids.commons.time;
 
+import static java.security.AccessController.doPrivileged;
 import static java.util.Objects.requireNonNull;
 import static java.util.ServiceLoader.load;
 import static org.apiguardian.api.API.Status.STABLE;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.PrivilegedAction;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -42,6 +44,8 @@ import org.apiguardian.api.API;
  */
 @API(status = STABLE, since = "1.0")
 public abstract class ClockSupplier implements Supplier<Clock> {
+
+  static final String CACHED_PROPERTY_KEY = "io.sdavids.commons.time.clock.supplier.default.cached";
 
   private enum SystemUtcClockSupplier implements Supplier<Clock> {
     INSTANCE;
@@ -114,12 +118,48 @@ public abstract class ClockSupplier implements Supplier<Clock> {
     }
   }
 
+  private static final class NonCachingUuidSupplier implements Supplier<Clock>, Serializable {
+
+    private static final long serialVersionUID = 937273036612993297L;
+
+    private volatile String supplierClassName = "unitialized - call get() first";
+
+    @Override
+    public Clock get() {
+      Iterator<ClockSupplier> providers = load(ClockSupplier.class).iterator();
+
+      Supplier<Clock> supplier =
+          providers.hasNext() ? providers.next() : SystemUtcClockSupplier.INSTANCE;
+
+      supplierClassName = supplier.getClass().getName();
+
+      return supplier.get();
+    }
+
+    @Override
+    public String toString() {
+      return "NonCachingUuidSupplier(" + supplierClassName + ')';
+    }
+  }
+
   private static final class SingletonHolder {
 
     private static Supplier<Clock> initialize() {
-      Iterator<ClockSupplier> providers = load(ClockSupplier.class).iterator();
+      String cached = getCachedSystemProperty();
 
-      return providers.hasNext() ? providers.next() : SystemUtcClockSupplier.INSTANCE;
+      if (cached == null || Boolean.parseBoolean(cached)) {
+        Iterator<ClockSupplier> providers = load(ClockSupplier.class).iterator();
+
+        return providers.hasNext() ? providers.next() : SystemUtcClockSupplier.INSTANCE;
+      }
+
+      return new NonCachingUuidSupplier();
+    }
+
+    private static String getCachedSystemProperty() {
+      return System.getSecurityManager() == null
+          ? System.getProperty(CACHED_PROPERTY_KEY)
+          : doPrivileged((PrivilegedAction<String>) () -> System.getProperty(CACHED_PROPERTY_KEY));
     }
 
     static final Supplier<Clock> INSTANCE = initialize();
@@ -130,6 +170,11 @@ public abstract class ClockSupplier implements Supplier<Clock> {
    *
    * <p>The first instance of type {@code ClockSupplier} obtained by the {@code ServiceLoader} is
    * used. Otherwise, a supplier returning a clock in the UTC timezone is used.
+   *
+   * <p>By default the instance returned by the {@code ServiceLoader} is cached. In order to turn
+   * off caching set the system property {@code
+   * io.sdavids.commons.time.clock.supplier.default.cached} to {@code false}. <em>Note:</em> The
+   * system property is evaluated once, i.e. caching cannot be dynamically enabled/disabled.
    *
    * @return some Clock supplier; never null
    * @see #systemUtcClockSupplier()
