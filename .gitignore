@@ -9,6 +9,7 @@ Thumbs.db
 
 ### IntelliJ ###
 /.idea/
+/out/
 *.iml
 
 ### Eclipse ###
@@ -16,6 +17,9 @@ Thumbs.db
 /.settings/
 .classpath
 .project
+
+### VS Code ###
+/.vscode
 
 ### JRebel ###
 rebel.xml
